@@ -5,6 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+        <script
+            src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <link rel="stylesheet" href="./assets/css/style.css">
         <script src="./assets/js/app.js"></script>
         <title>Gestão de Notas</title>
@@ -15,26 +20,28 @@
     <body class="body">
         <h3>Gestão de Notas</h3>
         <div class="childBody" style="width: 55%;">
-            <form action="/">
+            <input type="hidden" id="input_id" , name="input_id">
+            <label for="input_nome">Nome do aluno</label>
+            <input class="input_text" type="text" id="input_nome"
+                autocomplete="off" required
+                name="input_nome" placeholder="Informe o nome do aluno">
 
-                <label for="input_nome">Nome do aluno</label>
-                <input class="input_text" type="text" id="input_nome"
-                    autocomplete="off" required
-                    name="input_nome" placeholder="Informe o nome do aluno">
+            <label for="input_email">Email do aluno</label>
+            <input class="input_text" type="email" id="input_email"
+                autocomplete="off" required
+                name="input_email" placeholder="Informe o e-mail do aluno">
 
-                <label for="input_email">Email do aluno</label>
-                <input class="input_text" type="email" id="input_email"
-                    autocomplete="off" required
-                    name="input_email" placeholder="Informe o e-mail do aluno">
+            <label for="input_ra">RA</label>
+            <input class="input_text" type="text" id="input_ra"
+                name="input_ra" autocomplete="off" required
+                placeholder="Informe o RA (Registro Acadêmico).">
 
-                <label for="input_ra">RA</label>
-                <input class="input_text" type="text" id="input_ra"
-                    name="input_ra" autocomplete="off" required
-                    placeholder="Informe o RA (Registro Acadêmico).">
-
-                <input class="btn_novo" type="submit"
-                    value="Cadastrar">
-            </form>
+            <input class="btn_cadastrar" type="submit" id="btn_cadastrar"
+                name="btn_cadastrar"
+                value="Cadastrar" onclick="cadastrarAluno()">
+            <input class="btn_cancelar" type="submit" id="btn_cancelar"
+                name="btn_cancelar"
+                value="Cancelar" onclick="cancelaAlteracao()">
             <div id="div_lista_de_alunos">
                 <table id="table" style="width: 100%;"></table>
             </div>

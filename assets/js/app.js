@@ -5,12 +5,22 @@ localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
 let notaArrayLista = localStorage.getItem('notasList') ? JSON.parse(localStorage.getItem('notasList')) : [];
 localStorage.setItem('notasList', JSON.stringify(notaArrayLista));
 
-class AlunoObj {
-    constructor(id, ra, nome, email) {
+class AlunoModel {
+    constructor(id, ra, nome, email, aprovado) {
         this.id = id;
         this.ra = ra;
         this.nome = nome;
         this.email = email;
+        this.aprovado = aprovado;
+        this.notas = [];
+    }
+}
+
+class NotaModel extends AlunoModel {
+    constructor(id, semestre, nota) {
+        this.id = id;
+        this.semestre = semestre;
+        this.nota = nota;
     }
 }
 
@@ -85,43 +95,69 @@ function criaCabecalhoTable() {
     table.insertBefore(row, table.childNodes[0]);// Adiciona a linha na posição zero(0) tabela
 }
 
-function criarElemento(objetoTarefa) {
-    const taskId = `tarefa_id_${objetoTarefa.id}`;
+function criarElemento(modeloAluno) {
+    const taskId = `aluno_id_${modeloAluno.id}`;
 
     // Create two new cells
-    var cellTextoTarefa = document.createElement("td");
-    cellTextoTarefa.id = taskId;
-    cellTextoTarefa.innerHTML = objetoTarefa.nome;
+    var cellTextoRaAluno = document.createElement("td");
+    cellTextoRaAluno.id = taskId;
+    cellTextoRaAluno.innerHTML = modeloAluno.ra;
+    // Create two new cells
+    var cellTextoNomeAluno = document.createElement("td");
+    cellTextoNomeAluno.id = taskId;
+    cellTextoNomeAluno.innerHTML = modeloAluno.nome;
+    // Create two new cells
+    var cellTextoEmailAluno = document.createElement("td");
+    cellTextoEmailAluno.id = taskId;
+    cellTextoEmailAluno.innerHTML = modeloAluno.email;
 
-    var cellCheckBox = document.createElement("td");
     var cellEditar = document.createElement("td");
     var cellDeletar = document.createElement("td");
-    const rowId = `row_id_${objetoTarefa.id}`;
+    const rowId = `row_id_${modeloAluno.id}`;
 
-    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoTarefa('${taskId}')`));
-    cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarTarefa('${rowId}', '${taskId}')`));
+    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoAluno('${taskId}')`));
+    cellDeletar.appendChild(criaButtonGeneric('Notas', 'btn_nota', `listarNotaAluno('${rowId}', '${taskId}')`));
 
     var row = document.createElement("tr");
     row.id = rowId;
-    row.appendChild(cellTextoTarefa);
-    row.appendChild(cellCheckBox);
+    row.appendChild(cellTextoRaAluno);
+    row.appendChild(cellTextoNomeAluno);
+    row.appendChild(cellTextoEmailAluno);
     row.appendChild(cellEditar);
     row.appendChild(cellDeletar);
     const table = document.getElementById("table");
     table.appendChild(row);// Adiciona a linha na tabela
-    const inputNovaTarefa = document.getElementById('input_nova_tarefa');
-    inputNovaTarefa.value = ''; // Limpa o input de tarefa
-    document.getElementById("input_nova_tarefa").focus(); // Seta o foco no input
+    limpaCampos();
 
-    const idInputChecked = `checkbox_${taskId}`;
+    mostrarOcultarBotaoCancelar(false) // Oculta o botão que cancela a alteração
 
-    if (!objetoTarefa.email) {
+    if (!modeloAluno.aprovado) {
         row.style = 'text-decoration: none;';
-        document.getElementById(idInputChecked).checked = false;
     } else {
         row.style = 'text-decoration: line-through;';
-        document.getElementById(idInputChecked).checked = true;
     }
+}
+
+function mostrarOcultarBotaoCancelar(mostrar) {
+    const btnCancelar = document.getElementById("btn_cancelar");
+    btnCancelar.style = mostrar ? "display: null;" : "display: none;"
+}
+
+function limpaCampos() {
+    const inputId = document.getElementById('input_id');
+    inputId.value = ''; // Limpa o input de ID
+
+    const inputNome = document.getElementById('input_nome');
+    inputNome.value = ''; // Limpa o input de nome
+
+    document.getElementById("input_nome").focus(); // Seta o foco no input
+    const inputEmail = document.getElementById('input_email');
+    inputEmail.value = ''; // Limpa o input do email
+    const inputRA = document.getElementById('input_ra');
+    inputRA.value = ''; // Limpa o input do RA (Registro Acadêmico)     
+
+    const btnCadastrar = document.getElementById('btn_cadastrar');
+    btnCadastrar.value = 'Cadastrar';
 }
 
 function criaButtonGeneric(nome, className, funcao) {
@@ -134,10 +170,15 @@ function criaButtonGeneric(nome, className, funcao) {
     return button;
 }
 
-function addAluno() {
-    const novaTarefa = document.getElementById('input_nova_tarefa').value;
-    if (novaTarefa == null || novaTarefa == '') {
-        swal('OPS!, Enter the task description.', {
+function cadastrarAluno() {
+
+    const inputId = document.getElementById('input_id');
+
+    const nomeAluno = document.getElementById('input_nome').value;
+    const raAluno = document.getElementById('input_ra').value;
+    const emailAluno = document.getElementById('input_email').value;
+    if (nomeAluno == null || nomeAluno == '') {
+        swal('OPS!, Por favor informe o nome do aluno.', {
             button: {
                 text: "OK",
             },
@@ -146,34 +187,78 @@ function addAluno() {
     }
     const table = document.getElementById("table");
     let quantidade = table.children.length;
-    let objTarefa = new AlunoObj();
-    objTarefa.id = quantidade;
-    objTarefa.nome = novaTarefa;
-    objTarefa.email = false;
-    criaNovaTarefa(objTarefa, true);
+    let alunoModel = new AlunoModel();
+    alunoModel.id = quantidade;
+    alunoModel.nome = nomeAluno;
+    alunoModel.ra = raAluno;
+    alunoModel.email = emailAluno;
+    alunoModel.aprovado = false;
+    if (inputId.value == undefined || inputId.value == null || inputId.value == '') {
+        cadastraAluno(alunoModel, true);
+    } else {
+        //swal('Pergunta!', 'Deseja alterar os dados do aluno?', "info");
+        swal({
+            title: `Você deseja alterar os dados do(a) aluno(a): "${nomeAluno}"?`,
+            icon: "warning",
+            buttons: ["Não", "Sim"],
+            buttons: true,
+            dangerMode: true,
+
+        }).then((acao) => {
+            if (acao) {
+                console.log(`Alterado os dados do(a) aluno(a): ${nomeAluno}`);
+                update();
+            } else {
+                console.log(`Não foi alterado os dados do(a) aluno(a): ${nomeAluno}`);
+            }
+        });
+    }
 };
 
-function criaNovaTarefa(objeto) {
-    let temItem = false;
+function cadastraAluno(objeto) {
+    let nomeExiste = false;
+    let raExiste = false;
+    let rmailExiste = false;
 
     for (var i = 0; i < alunoArrayLista.length; i++) {
         if (alunoArrayLista[i].nome.trim() == objeto.nome.trim()) {
-            temItem = true;
+            nomeExiste = true;
             break;
         }
     }
-
-    if (temItem) {
-        swal('Alert!', 'This task has already been registered.', "info");
+    for (var i = 0; i < alunoArrayLista.length; i++) {
+        if (alunoArrayLista[i].ra.trim() == objeto.ra.trim()) {
+            raExiste = true;
+            break;
+        }
+    }
+    for (var i = 0; i < alunoArrayLista.length; i++) {
+        if (alunoArrayLista[i].email.trim() == objeto.email.trim()) {
+            rmailExiste = true;
+            break;
+        }
+    }
+    if (nomeExiste) {
+        swal('Alert!', 'Ops, esse nome já foi cadastrado.', "info");
+        return;
+    }
+    if (rmailExiste) {
+        swal('Alert!', 'Ops, esse e-mail já foi cadastrado.', "info");
+        return;
+    }
+    if (raExiste) {
+        swal('Alert!', 'Ops, esse RA (Registro Acadêmico) já foi cadastrado.', "info");
         return;
     }
 
-    let objetoTarefa = new AlunoObj();
-    objetoTarefa.id = objeto.id - 1;
-    objetoTarefa.nome = objeto.nome;
-    objetoTarefa.email = false;
-    alunoArrayLista.push(objetoTarefa);
-    criarElemento(objetoTarefa);
+    let modeloAluno = new AlunoModel();
+    modeloAluno.id = objeto.id - 1;
+    modeloAluno.nome = objeto.nome;
+    modeloAluno.ra = objeto.ra;
+    modeloAluno.email = objeto.email;
+    modeloAluno.aprovado = false;
+    alunoArrayLista.push(modeloAluno);
+    criarElemento(modeloAluno);
 
     var linhasTabela = document.getElementsByTagName("tr");
     for (var i = 0; i < linhasTabela.length; i++) {
@@ -189,105 +274,77 @@ function criaNovaTarefa(objeto) {
     localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista))
 }
 
-function mudaEstadoTarefa(taskId) {
-    const tarefa = document.getElementById(taskId).innerHTML;
-    let indexItem = -1;
-    let objTarefa = new AlunoObj();
-    objTarefa.id = indexItem;
-    objTarefa.nome = tarefa;
-
-    for (var i = 0; i < alunoArrayLista.length; i++) {
-        if (alunoArrayLista[i].nome.trim() == tarefa.trim()) {
-            objTarefa.email = !alunoArrayLista[i].email;
-            indexItem = i;
-            break;
-        } else {
-            objTarefa.email = alunoArrayLista[i].email;
-        }
-    }
-    alunoArrayLista.splice(indexItem, 1);
-    alunoArrayLista.push(objTarefa);
-    localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
-    listarAlunos();
+function cancelaAlteracao() {
+    mostrarOcultarBotaoCancelar(false);
+    limpaCampos();
 }
 
-function modalEdicaoTarefa(taskId) {
+function modalEdicaoAluno(taskId) {
     const taskSelected = document.getElementById(taskId).innerHTML;
-    //let tarefaAlterada = prompt('Changing task', taskSelected);
-    // Documentação do exemplo: https://sweetalert.js.org/guides/ AND https://sweetalert2.github.io/#examples
-
+    console.log(`Seleção - ${taskSelected}`);
+    let aluno = new AlunoModel();
     for (var i = 0; i < alunoArrayLista.length; i++) {
-        if (alunoArrayLista[i].nome.trim() == taskSelected.trim() && alunoArrayLista[i].email) {
-            swal('Attention!', 'This task has now been completed.', "warning");
-            return;
+        if (alunoArrayLista[i].ra.trim() == taskSelected) {
+            aluno.ra = alunoArrayLista[i].ra;
+            aluno.nome = alunoArrayLista[i].nome;
+            aluno.email = alunoArrayLista[i].email;
+            aluno.aprovado = alunoArrayLista[i].aprovado;
+
+            const inputId = document.getElementById('input_id');
+            inputId.value = taskId;
+
+            const inputRa = document.getElementById('input_ra');
+            inputRa.value = aluno.ra;
+            const inputNome = document.getElementById('input_nome');
+            inputNome.value = aluno.nome;
+            const inputEmail = document.getElementById('input_email');
+            inputEmail.value = aluno.email;
+
+            const btnCadastrar = document.getElementById('btn_cadastrar');
+            btnCadastrar.value = 'Alterar';
+
+            mostrarOcultarBotaoCancelar(true); // Mostra o botão que cancela a alteração
+
+            break;
         }
     }
-
-    swal({
-        title: 'Changing task!',
-        content: "input",
-        content: {
-            element: "input",
-            attributes: {
-                placeholder: "Please inform the task",
-                value: taskSelected,
-            },
-        },
-        closeModal: false,
-        closeOnClickOutside: false,
-        closeOnEsc: false,
-        height: 250,
-    }).then((newValue) => {
-        if (newValue) {
-            update(newValue, taskId)
-        } else {
-            swal('Attention!', 'This task has not changed.', "info");
-        }
-    });
 }
 
-function update(newValue, taskId) {
-    document.getElementById(taskId).innerHTML = newValue;
-    let indexItem = taskId.replace('tarefa_id_', '');
-    let email = false;
-    if (newValue != null) {
-        for (var i = 0; i < alunoArrayLista.length; i++) {
-            if (alunoArrayLista[i].nome.trim() == newValue.trim()) {
-                email = alunoArrayLista[i].email;
-                temItem = true;
-                break;
-            }
-        }
-        let objTarefa = new AlunoObj();
-        objTarefa.id = indexItem;
-        objTarefa.nome = newValue;
-        objTarefa.email = email;
+function update() {
+
+    const inputId = document.getElementById('input_id');
+    if (inputId.value != undefined && inputId.value != null && inputId.value != '') {
+        let indexItem = inputId.value.replace('aluno_id_', '');
+        //let indexItem = taskId.replace('aluno_id_', '');
+
+        const inputRa = document.getElementById('input_ra').value;
+        const inputNome = document.getElementById('input_nome').value;
+        const inputEmail = document.getElementById('input_email').value;
+
+        let alunoModel = new AlunoModel();
+        alunoModel.id = indexItem;
+        alunoModel.ra = inputRa;
+        alunoModel.nome = inputNome;
+        alunoModel.email = inputEmail;
         alunoArrayLista.splice(indexItem, 1);
-        alunoArrayLista.push(objTarefa);
+        alunoArrayLista.push(alunoModel);
         localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
+        limpaCampos();
+        listarAlunos();
+        mostrarOcultarBotaoCancelar(false) // Oculta o botão que cancela a alteração
     }
 }
 
-function deletarTarefa(rowId, idTask) {
+function listarNotaAluno(rowId, idAluno) {
     var row = document.getElementById(rowId);
     const id = rowId.replace("row_id_", '');
-    var rowDescri = document.getElementById(idTask).innerHTML;
+    var rowDescri = document.getElementById(idAluno).innerHTML;
     swal({
-        title: `Do you really want to delete this task: "${rowDescri}"?`,
+        title: "Notas do aluno",
+        text: `Notas semestrais do aluno(a): ${rowDescri}`,
         icon: "info",
-        buttons: ["Cancel", "Delete"],
-        dangerMode: true,
-
-    }).then((willDelete) => {
-        if (willDelete) {
-            row.parentNode.removeChild(row);
-            alunoArrayLista.splice(id, 1);
-            localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
-            listarAlunos();
-            swal("Task deleted successfully!", {
-                icon: "warning",
-                timer: 2000,
-            });
-        }
+        button: "Ok",
     });
 }
+
+

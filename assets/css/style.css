@@ -6,7 +6,7 @@
 
 .childBody {
   position: absolute;
-  top: 30%;
+  top: 350px;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -38,13 +38,23 @@
   box-sizing: border-box;
 }
 
-input[type=submit]:hover {
-  background-color: #45a049;
+.btn_cadastrar {
+  width: 49%;
+  background-color: grey;
+  position: relative;
+  height: 50px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: white;
+  padding: 14px 20px;
+  margin: 25px 0;
+  border-radius: 20px 20px 20px 20px;
 }
 
-.btn_novo {
-  width: 100%;
-  background-color: grey;
+.btn_cancelar {
+  width: 49%;
+  background-color: #f06565;
   position: relative;
   height: 50px;
   border: none;
@@ -87,23 +97,28 @@ div {
   border: 2px solid dodgerblue;
 }
 
-.btn_novo:hover {
+.btn_cadastrar:hover {
   background: slategrey;
 }
 
+.btn_cancelar:hover {
+  background: #fd0505;
+}
+
+
 .btn_editar {
-  background-color: #1404f8;
+  background-color: #04f86a;
 }
 
 .btn_editar:hover {
   background-color: #6b62f3;
 }
 
-.btn_deletar {
-  background-color: #fd0505;
+.btn_nota {
+  background-color: coral;
 }
 
-.btn_deletar:hover {
+.btn_nota:hover {
   background-color: #f06565;
 }
 
