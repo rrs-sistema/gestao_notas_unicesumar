@@ -1,6 +1,6 @@
 # Gestão de Notas
 
-Esta é uma aplicação simples de para gestão de Notas Academica desenvolvida utilizando HTML, CSS e JavaScript.
+Esta é uma aplicação simples de para gestão de Notas Acadêmica desenvolvida utilizando HTML, CSS e JavaScript.
 
 <img src="/img/gestao-notas.png">
 
