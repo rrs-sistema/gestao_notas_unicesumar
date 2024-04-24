@@ -1,9 +1,17 @@
 .body {
+  background-image: url(/gestao_notas_unicesumar-master/assets/img/fundo_mar.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.titulo{
+  color: white;
+  text-align: center;
+
+}
 .childBody {
   position: absolute;
   top: 350px;
