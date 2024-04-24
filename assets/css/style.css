@@ -1,5 +1,5 @@
 .body {
-  background-image: url(/gestao_notas_unicesumar-master/assets/img/fundo_mar.jpg);
+  background-image: url(/assets/img/fundo_mar.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
@@ -13,6 +13,8 @@
 
 }
 .childBody {
+  color: white;
+  background-color: #32626F;
   position: absolute;
   top: 350px;
   left: 50%;
@@ -48,7 +50,7 @@
 
 .btn_cadastrar {
   width: 49%;
-  background-color: grey;
+  background-color: #669297;
   position: relative;
   height: 50px;
   border: none;
@@ -76,7 +78,7 @@
 
 div {
   border-radius: 10px;
-  background-color: #f2f2f2;
+  background-color: #6F9DAC;
   padding: 10px;
 }
 
