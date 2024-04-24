@@ -68,7 +68,7 @@ function listarAlunos() {
 
 function criaCabecalhoTable() {
     var row = document.createElement("tr");
-    row.style = 'background-color: grey;';
+    row.style = 'background-color: #0F2028;';
 
     var thRA = document.createElement("th");
     thRA.innerHTML = 'RA';
