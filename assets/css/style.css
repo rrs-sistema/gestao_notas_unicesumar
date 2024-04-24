@@ -6,58 +6,89 @@
 
 .childBody {
   position: absolute;
-  top: 50%;
+  top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-#label_nova_tarefa  {
-  width:auto;
-  margin-left: 5px;
-  font-weight: bold;
-  font-size: 25px !important; 
-}
-
-.inputText {
-  width: 490px;
-  padding: 12px 5px;
-  box-sizing: border-box;
-  margin-left: 22px;
-  background: #fff;
-  height: 50px;
-  border: none;
-  outline: none;
-  padding: 0 25px;
-  border-radius: 25px 0 0 25px;
-
-}
-
-.btn_generic {
-  width: 10%;
-  color: white;
-  padding: 5px 5px;
-  margin: 2px 2px;
-  width: 55px;
-  border: none;
+.input_text {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.input_text_ra {
+  width: 250px;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.label_text_ra {
+  width: 100%;
+  margin: 8px 0;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
 }
 
 .btn_novo {
-  background-color: #4CAF50;
+  width: 100%;
+  background-color: grey;
   position: relative;
-    left: -5px;
-    border-radius: 0 25px 25px 0;
-    width: 150px;
-    height: 50px;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    color: #fff;  
+  height: 50px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: white;
+  padding: 14px 20px;
+  margin: 25px 0;
+  border-radius: 20px 20px 20px 20px;
+}
+
+div {
+  border-radius: 10px;
+  background-color: #f2f2f2;
+  padding: 10px;
+}
+
+.input-container {
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.icon {
+  padding: 10px;
+  background: dodgerblue;
+  color: white;
+  min-width: 50px;
+  text-align: center;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  outline: none;
+}
+
+.input-field:focus {
+  border: 2px solid dodgerblue;
 }
 
 .btn_novo:hover {
-  background: #f76e45;
+  background: slategrey;
 }
 
 .btn_editar {
@@ -95,46 +126,3 @@
 .styleTwo:hover {
   background-color: rgb(181, 198, 216);
 }
-
-div {
-  border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 20px;
-}
-
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td, th {
-  border: 0px solid transparent;
-  text-align: left;
-  padding: 8px;
-}
-
-.sa-button-container {
-    height: 60px !important;
-}
-
-.sweet-alert button {
-    margin: 2px 2px 0 5px !important;
-    padding: 5px 16px !important;
-}
-
-.sweet-alert button {
-    background-color: #8cd4f5;
-    color: black !important;
-    border: 0;
-    box-shadow: none;
-    font-size: 17px;
-    font-weight: 500;
-    -webkit-border-radius: 4px;
-    border-radius: 5px;
-    padding: 10px 32px;
-    margin: 26px 5px 0 5px;
-    cursor: pointer;
-}
-
-

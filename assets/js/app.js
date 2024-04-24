@@ -1,20 +1,24 @@
 const localStorage = window.localStorage;
-let tarefaArrayLista = localStorage.getItem('tasksList') ? JSON.parse(localStorage.getItem('tasksList')) : [];
-localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista));
+let alunoArrayLista = localStorage.getItem('alunosList') ? JSON.parse(localStorage.getItem('alunosList')) : [];
+localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
 
-class TarefaObj {
-    constructor(id, descricao, status) {
+let notaArrayLista = localStorage.getItem('notasList') ? JSON.parse(localStorage.getItem('notasList')) : [];
+localStorage.setItem('notasList', JSON.stringify(notaArrayLista));
+
+class AlunoObj {
+    constructor(id, ra, nome, email) {
         this.id = id;
-        this.descricao = descricao;
-        this.status = status;
+        this.ra = ra;
+        this.nome = nome;
+        this.email = email;
     }
 }
 
 window.onload = function () {
-    listarTarefa();
+    listarAlunos();
 };
 
-function listarTarefa() {
+function listarAlunos() {
 
     const parent = document.getElementById("table");
     while (parent.firstChild) {
@@ -24,12 +28,12 @@ function listarTarefa() {
     // Cria o cabeçalho da tabela
     criaCabecalhoTable();
 
-    const dadosLocalStorage = JSON.parse(localStorage.getItem('tasksList'));
-    tarefaArrayLista = [];
+    const dadosLocalStorage = JSON.parse(localStorage.getItem('alunosList'));
+    alunoArrayLista = [];
     let index = 0;
     dadosLocalStorage.forEach(item => {
         item.id = index;
-        tarefaArrayLista.push(item);
+        alunoArrayLista.push(item);
         criarElemento(item);
         index++;
     });
@@ -49,19 +53,30 @@ function listarTarefa() {
         }
     }
 
-    localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista))
+    localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista))
 }
 
 function criaCabecalhoTable() {
     var row = document.createElement("tr");
-    row.style = 'background-color: cadetblue;';
+    row.style = 'background-color: grey;';
+
+    var thRA = document.createElement("th");
+    thRA.innerHTML = 'RA';
+    thRA.style = 'width: 100px; text-align: left;';
+    row.append(thRA);
+
     var thTask = document.createElement("th");
-    thTask.innerHTML = 'Task';
-    thTask.style = 'width: 600px; text-align: left;';
+    thTask.innerHTML = 'Nome';
+    thTask.style = 'width: 40%; text-align: left;';
     row.append(thTask);
 
+    var thEmail = document.createElement("th");
+    thEmail.innerHTML = 'E-mail';
+    thEmail.style = 'width: 40%;; text-align: left;';
+    row.append(thEmail);
+
     var thActions = document.createElement("th");
-    thActions.innerHTML = 'Actions';
+    thActions.innerHTML = 'Ações';
     thActions.style = 'text-align: center;';
     thActions.colSpan = 3;
     row.append(thActions);
@@ -76,14 +91,13 @@ function criarElemento(objetoTarefa) {
     // Create two new cells
     var cellTextoTarefa = document.createElement("td");
     cellTextoTarefa.id = taskId;
-    cellTextoTarefa.innerHTML = objetoTarefa.descricao;
+    cellTextoTarefa.innerHTML = objetoTarefa.nome;
 
     var cellCheckBox = document.createElement("td");
     var cellEditar = document.createElement("td");
     var cellDeletar = document.createElement("td");
     const rowId = `row_id_${objetoTarefa.id}`;
 
-    cellCheckBox.appendChild(criaInputCheckBoxTarefa(taskId));
     cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoTarefa('${taskId}')`));
     cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarTarefa('${rowId}', '${taskId}')`));
 
@@ -101,21 +115,13 @@ function criarElemento(objetoTarefa) {
 
     const idInputChecked = `checkbox_${taskId}`;
 
-    if (!objetoTarefa.status) {
+    if (!objetoTarefa.email) {
         row.style = 'text-decoration: none;';
         document.getElementById(idInputChecked).checked = false;
     } else {
         row.style = 'text-decoration: line-through;';
         document.getElementById(idInputChecked).checked = true;
     }
-}
-
-function criaInputCheckBoxTarefa(taskId) {
-    const inputTarefa = document.createElement('input');
-    inputTarefa.id = `checkbox_${taskId}`;
-    inputTarefa.type = 'checkbox';
-    inputTarefa.setAttribute('onclick', `mudaEstadoTarefa('${taskId}')`);
-    return inputTarefa;
 }
 
 function criaButtonGeneric(nome, className, funcao) {
@@ -128,7 +134,7 @@ function criaButtonGeneric(nome, className, funcao) {
     return button;
 }
 
-function addTask() {
+function addAluno() {
     const novaTarefa = document.getElementById('input_nova_tarefa').value;
     if (novaTarefa == null || novaTarefa == '') {
         swal('OPS!, Enter the task description.', {
@@ -140,18 +146,18 @@ function addTask() {
     }
     const table = document.getElementById("table");
     let quantidade = table.children.length;
-    let objTarefa = new TarefaObj();
+    let objTarefa = new AlunoObj();
     objTarefa.id = quantidade;
-    objTarefa.descricao = novaTarefa;
-    objTarefa.status = false;
+    objTarefa.nome = novaTarefa;
+    objTarefa.email = false;
     criaNovaTarefa(objTarefa, true);
 };
 
 function criaNovaTarefa(objeto) {
     let temItem = false;
 
-    for (var i = 0; i < tarefaArrayLista.length; i++) {
-        if (tarefaArrayLista[i].descricao.trim() == objeto.descricao.trim()) {
+    for (var i = 0; i < alunoArrayLista.length; i++) {
+        if (alunoArrayLista[i].nome.trim() == objeto.nome.trim()) {
             temItem = true;
             break;
         }
@@ -162,11 +168,11 @@ function criaNovaTarefa(objeto) {
         return;
     }
 
-    let objetoTarefa = new TarefaObj();
+    let objetoTarefa = new AlunoObj();
     objetoTarefa.id = objeto.id - 1;
-    objetoTarefa.descricao = objeto.descricao;
-    objetoTarefa.status = false;
-    tarefaArrayLista.push(objetoTarefa);
+    objetoTarefa.nome = objeto.nome;
+    objetoTarefa.email = false;
+    alunoArrayLista.push(objetoTarefa);
     criarElemento(objetoTarefa);
 
     var linhasTabela = document.getElementsByTagName("tr");
@@ -180,29 +186,29 @@ function criaNovaTarefa(objeto) {
         }
     }
 
-    localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista))
+    localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista))
 }
 
 function mudaEstadoTarefa(taskId) {
     const tarefa = document.getElementById(taskId).innerHTML;
     let indexItem = -1;
-    let objTarefa = new TarefaObj();
+    let objTarefa = new AlunoObj();
     objTarefa.id = indexItem;
-    objTarefa.descricao = tarefa;
+    objTarefa.nome = tarefa;
 
-    for (var i = 0; i < tarefaArrayLista.length; i++) {
-        if (tarefaArrayLista[i].descricao.trim() == tarefa.trim()) {
-            objTarefa.status = !tarefaArrayLista[i].status;
+    for (var i = 0; i < alunoArrayLista.length; i++) {
+        if (alunoArrayLista[i].nome.trim() == tarefa.trim()) {
+            objTarefa.email = !alunoArrayLista[i].email;
             indexItem = i;
             break;
         } else {
-            objTarefa.status = tarefaArrayLista[i].status;
+            objTarefa.email = alunoArrayLista[i].email;
         }
     }
-    tarefaArrayLista.splice(indexItem, 1);
-    tarefaArrayLista.push(objTarefa);
-    localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista));
-    listarTarefa();
+    alunoArrayLista.splice(indexItem, 1);
+    alunoArrayLista.push(objTarefa);
+    localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
+    listarAlunos();
 }
 
 function modalEdicaoTarefa(taskId) {
@@ -210,8 +216,8 @@ function modalEdicaoTarefa(taskId) {
     //let tarefaAlterada = prompt('Changing task', taskSelected);
     // Documentação do exemplo: https://sweetalert.js.org/guides/ AND https://sweetalert2.github.io/#examples
 
-    for (var i = 0; i < tarefaArrayLista.length; i++) {
-        if (tarefaArrayLista[i].descricao.trim() == taskSelected.trim() && tarefaArrayLista[i].status) {
+    for (var i = 0; i < alunoArrayLista.length; i++) {
+        if (alunoArrayLista[i].nome.trim() == taskSelected.trim() && alunoArrayLista[i].email) {
             swal('Attention!', 'This task has now been completed.', "warning");
             return;
         }
@@ -243,22 +249,22 @@ function modalEdicaoTarefa(taskId) {
 function update(newValue, taskId) {
     document.getElementById(taskId).innerHTML = newValue;
     let indexItem = taskId.replace('tarefa_id_', '');
-    let status = false;
+    let email = false;
     if (newValue != null) {
-        for (var i = 0; i < tarefaArrayLista.length; i++) {
-            if (tarefaArrayLista[i].descricao.trim() == newValue.trim()) {
-                status = tarefaArrayLista[i].status;
+        for (var i = 0; i < alunoArrayLista.length; i++) {
+            if (alunoArrayLista[i].nome.trim() == newValue.trim()) {
+                email = alunoArrayLista[i].email;
                 temItem = true;
                 break;
             }
         }
-        let objTarefa = new TarefaObj();
+        let objTarefa = new AlunoObj();
         objTarefa.id = indexItem;
-        objTarefa.descricao = newValue;
-        objTarefa.status = status;
-        tarefaArrayLista.splice(indexItem, 1);
-        tarefaArrayLista.push(objTarefa);
-        localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista));
+        objTarefa.nome = newValue;
+        objTarefa.email = email;
+        alunoArrayLista.splice(indexItem, 1);
+        alunoArrayLista.push(objTarefa);
+        localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
     }
 }
 
@@ -275,9 +281,9 @@ function deletarTarefa(rowId, idTask) {
     }).then((willDelete) => {
         if (willDelete) {
             row.parentNode.removeChild(row);
-            tarefaArrayLista.splice(id, 1);
-            localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista));
-            listarTarefa();
+            alunoArrayLista.splice(id, 1);
+            localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
+            listarAlunos();
             swal("Task deleted successfully!", {
                 icon: "warning",
                 timer: 2000,

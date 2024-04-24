@@ -1,31 +1,44 @@
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="./assets/css/style.css">
         <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
-        <script
-            src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-        <title>Task list</title>
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="./assets/css/style.css">
+        <script src="./assets/js/app.js"></script>
+        <title>Gestão de Notas</title>
     </head>
+    <!-- FONTE: https://www.w3schools.com/css/tryit.asp?filename=trycss_forms 
+        outro modelo: 
+        https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_form_icon -->
     <body class="body">
-        <div class="childBody" style="width: 700px;">
-            <h2 style="text-align: center;">Task list</h2>
-            <div id="label_nova_tarefa">
-                <label for="input_nova_tarefa">New task</label>
+        <h3>Gestão de Notas</h3>
+        <div class="childBody" style="width: 55%;">
+            <form action="/">
+
+                <label for="input_nome">Nome do aluno</label>
+                <input class="input_text" type="text" id="input_nome"
+                    autocomplete="off" required
+                    name="input_nome" placeholder="Informe o nome do aluno">
+
+                <label for="input_email">Email do aluno</label>
+                <input class="input_text" type="email" id="input_email"
+                    autocomplete="off" required
+                    name="input_email" placeholder="Informe o e-mail do aluno">
+
+                <label for="input_ra">RA</label>
+                <input class="input_text" type="text" id="input_ra"
+                    name="input_ra" autocomplete="off" required
+                    placeholder="Informe o RA (Registro Acadêmico).">
+
+                <input class="btn_novo" type="submit"
+                    value="Cadastrar">
+            </form>
+            <div id="div_lista_de_alunos">
+                <table id="table" style="width: 100%;"></table>
             </div>
-            <input type="text" id="input_nova_tarefa" name="input_nova_tarefa"
-                class="inputText" autocomplete="off"
-                placeholder="Enter your new task please...">
-            <input type="button" value="To add" onclick="addTask()"
-                class="btn_novo btn_generic">
-            <div id="div_lista_de_tarefas">
-                <table id="table" style="width: 640px;"></table>
-            </div>
-            <script src="./assets/js/app.js"></script>
         </div>
+
     </body>
 </html>
