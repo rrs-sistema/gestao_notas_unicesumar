@@ -185,6 +185,22 @@ function cadastrarAluno() {
         });
         return;
     }
+    if (raAluno == null || raAluno == '') {
+        swal('OPS!, Por favor informe o RA (Registro Acadêmico) do aluno.', {
+            button: {
+                text: "OK",
+            },
+        });
+        return;
+    }
+    if (emailAluno == null || emailAluno == '') {
+        swal('OPS!, Por favor informe o e-mail do aluno.', {
+            button: {
+                text: "OK",
+            },
+        });
+        return;
+    }
     const table = document.getElementById("table");
     let quantidade = table.children.length;
     let alunoModel = new AlunoModel();
