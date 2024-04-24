@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./assets/css/style.css">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+        <script
+            src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <title>Task list</title>
+    </head>
+    <body class="body">
+        <div class="childBody" style="width: 700px;">
+            <h2 style="text-align: center;">Task list</h2>
+            <div id="label_nova_tarefa">
+                <label for="input_nova_tarefa">New task</label>
+            </div>
+            <input type="text" id="input_nova_tarefa" name="input_nova_tarefa"
+                class="inputText" autocomplete="off"
+                placeholder="Enter your new task please...">
+            <input type="button" value="To add" onclick="addTask()"
+                class="btn_novo btn_generic">
+            <div id="div_lista_de_tarefas">
+                <table id="table" style="width: 640px;"></table>
+            </div>
+            <script src="./assets/js/app.js"></script>
+        </div>
+    </body>
+</html>
