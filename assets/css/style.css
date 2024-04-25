@@ -122,16 +122,25 @@ div {
 }
 
 .btn_editar:hover {
-  background-color: #6b62f3;
+  background-color: limegreen;
 }
 
 .btn_nota {
-  background-color: coral;
+  background-color: darkorange;
   border-radius: 5px;
 }
 
 .btn_nota:hover {
-  background-color: #6b62f3;
+  background-color: orange;
+}
+
+.btn_deletar {
+  background-color: #fd0505;
+  border-radius: 5px;
+}
+
+.btn_deletar:hover {
+  background-color: #f06565;
 }
 
 .styleCab {

@@ -72,17 +72,17 @@ function criaCabecalhoTable() {
 
     var thRA = document.createElement("th");
     thRA.innerHTML = 'RA';
-    thRA.style = 'width: 100px; text-align: left;';
+    thRA.style = 'width: 120px; text-align: left;';
     row.append(thRA);
 
     var thTask = document.createElement("th");
     thTask.innerHTML = 'Nome';
-    thTask.style = 'width: 40%; text-align: left;';
+    thTask.style = 'width: 35%; text-align: left;';
     row.append(thTask);
 
     var thEmail = document.createElement("th");
     thEmail.innerHTML = 'E-mail';
-    thEmail.style = 'width: 40%;; text-align: left;';
+    thEmail.style = 'width: 35%;; text-align: left;';
     row.append(thEmail);
 
     var thActions = document.createElement("th");
@@ -96,27 +96,29 @@ function criaCabecalhoTable() {
 }
 
 function criarElemento(modeloAluno) {
-    const taskId = `aluno_id_${modeloAluno.id}`;
+    const alunoId = `aluno_id_${modeloAluno.id}`;
 
     // Create two new cells
     var cellTextoRaAluno = document.createElement("td");
-    cellTextoRaAluno.id = taskId;
+    cellTextoRaAluno.id = alunoId;
     cellTextoRaAluno.innerHTML = modeloAluno.ra;
     // Create two new cells
     var cellTextoNomeAluno = document.createElement("td");
-    cellTextoNomeAluno.id = taskId;
+    cellTextoNomeAluno.id = alunoId;
     cellTextoNomeAluno.innerHTML = modeloAluno.nome;
     // Create two new cells
     var cellTextoEmailAluno = document.createElement("td");
-    cellTextoEmailAluno.id = taskId;
+    cellTextoEmailAluno.id = alunoId;
     cellTextoEmailAluno.innerHTML = modeloAluno.email;
 
     var cellEditar = document.createElement("td");
+    var cellNota = document.createElement("td");
     var cellDeletar = document.createElement("td");
     const rowId = `row_id_${modeloAluno.id}`;
 
-    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoAluno('${taskId}')`));
-    cellDeletar.appendChild(criaButtonGeneric('Notas', 'btn_nota', `listarNotaAluno('${rowId}', '${taskId}')`));
+    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoAluno('${alunoId}')`));
+    cellNota.appendChild(criaButtonGeneric('Notas', 'btn_nota', `listarNotaAluno('${rowId}', '${alunoId}')`));
+    cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarAluno('${rowId}')`));
 
     var row = document.createElement("tr");
     row.id = rowId;
@@ -124,6 +126,7 @@ function criarElemento(modeloAluno) {
     row.appendChild(cellTextoNomeAluno);
     row.appendChild(cellTextoEmailAluno);
     row.appendChild(cellEditar);
+    row.appendChild(cellNota);
     row.appendChild(cellDeletar);
     const table = document.getElementById("table");
     table.appendChild(row);// Adiciona a linha na tabela
@@ -295,8 +298,8 @@ function cancelaAlteracao() {
     limpaCampos();
 }
 
-function modalEdicaoAluno(taskId) {
-    const taskSelected = document.getElementById(taskId).innerHTML;
+function modalEdicaoAluno(alunoId) {
+    const taskSelected = document.getElementById(alunoId).innerHTML;
     console.log(`Seleção - ${taskSelected}`);
     let aluno = new AlunoModel();
     for (var i = 0; i < alunoArrayLista.length; i++) {
@@ -307,7 +310,7 @@ function modalEdicaoAluno(taskId) {
             aluno.aprovado = alunoArrayLista[i].aprovado;
 
             const inputId = document.getElementById('input_id');
-            inputId.value = taskId;
+            inputId.value = alunoId;
 
             const inputRa = document.getElementById('input_ra');
             inputRa.value = aluno.ra;
@@ -331,7 +334,7 @@ function update() {
     const inputId = document.getElementById('input_id');
     if (inputId.value != undefined && inputId.value != null && inputId.value != '') {
         let indexItem = inputId.value.replace('aluno_id_', '');
-        //let indexItem = taskId.replace('aluno_id_', '');
+        //let indexItem = alunoId.replace('aluno_id_', '');
 
         const inputRa = document.getElementById('input_ra').value;
         const inputNome = document.getElementById('input_nome').value;
@@ -364,3 +367,26 @@ function listarNotaAluno(rowId, idAluno) {
 }
 
 
+function deletarAluno(rowId) {
+    var row = document.getElementById(rowId);
+    const id = rowId.replace("row_id_", '');
+    let objAluno = alunoArrayLista.find(o => o.id === parseInt(id));
+    swal({
+        title: `Deseja excluir o aluno: "${objAluno.nome}"?`,
+        icon: "info",
+        buttons: ["Cancelar", "Excluir"],
+        dangerMode: true,
+
+    }).then((willDelete) => {
+        if (willDelete) {
+            row.parentNode.removeChild(row);
+            alunoArrayLista.splice(id, 1);
+            localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
+            listarTarefa();
+            swal("Aluno excluir com sucesso!", {
+                icon: "warning",
+                timer: 2000,
+            });
+        }
+    });
+}
