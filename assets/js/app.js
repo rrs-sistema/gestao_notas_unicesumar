@@ -82,12 +82,11 @@ function criaCabecalhoTable() {
 
     var thEmail = document.createElement("th");
     thEmail.innerHTML = 'E-mail';
-    thEmail.style = 'width: 35%;; text-align: left;';
+    thEmail.style = 'width: 35%; text-align: left;';
     row.append(thEmail);
 
     var thActions = document.createElement("th");
     thActions.innerHTML = 'Ações';
-    thActions.style = 'text-align: center;';
     thActions.colSpan = 3;
     row.append(thActions);
 
@@ -117,8 +116,11 @@ function criarElemento(modeloAluno) {
     const rowId = `row_id_${modeloAluno.id}`;
 
     cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoAluno('${alunoId}')`));
+    cellEditar.style = 'text-align: center;';
     cellNota.appendChild(criaButtonGeneric('Notas', 'btn_nota', `listarNotaAluno('${rowId}', '${alunoId}')`));
+    cellNota.style = 'text-align: center;';
     cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarAluno('${rowId}')`));
+    cellDeletar.style = 'text-align: center;';
 
     var row = document.createElement("tr");
     row.id = rowId;

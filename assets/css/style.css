@@ -119,6 +119,7 @@ div {
 .btn_editar {
   background-color: #04f86a;
   border-radius: 5px;
+  vertical-align: center;
 }
 
 .btn_editar:hover {
@@ -137,6 +138,7 @@ div {
 .btn_deletar {
   background-color: #fd0505;
   border-radius: 5px;
+  align-items: center;
 }
 
 .btn_deletar:hover {
