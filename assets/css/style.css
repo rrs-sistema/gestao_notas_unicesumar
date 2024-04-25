@@ -16,7 +16,7 @@ header{
   justify-content: space-between;
   align-items: center;
   border-radius: 10px;
-  background-color: #b7dae6;
+  background-color: #ffffff;
   
 
 }
@@ -109,7 +109,7 @@ header{
 
 div {
   border-radius: 10px;
-  background-color: #b7dae6;
+  background-color: #fdfdfd;
   padding: 10px;
 }
 
