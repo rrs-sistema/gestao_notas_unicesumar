@@ -2,8 +2,8 @@ const localStorage = window.localStorage;
 let alunoArrayLista = localStorage.getItem('alunosList') ? JSON.parse(localStorage.getItem('alunosList')) : [];
 localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
 
-let notaArrayLista = localStorage.getItem('notasList') ? JSON.parse(localStorage.getItem('notasList')) : [];
-localStorage.setItem('notasList', JSON.stringify(notaArrayLista));
+let alunoArrayNotas = localStorage.getItem('notasList') ? JSON.parse(localStorage.getItem('notasList')) : [];
+localStorage.setItem('notasList', JSON.stringify(alunoArrayNotas));
 
 class AlunoModel {
     constructor(id, ra, nome, email, aprovado) {
@@ -16,16 +16,41 @@ class AlunoModel {
     }
 }
 
-class NotaModel extends AlunoModel {
-    constructor(id, semestre, nota) {
-        this.id = id;
-        this.semestre = semestre;
-        this.nota = nota;
-    }
-}
-
 window.onload = function () {
     listarAlunos();
+    let nota1 = new NotaModel();
+    nota1.id = 0;
+    nota1.idAluno = 2;
+    nota1.semestre = '1º Semestre';
+    nota1.nota = 5.9;
+    nota1.aprovado = false;
+
+    let nota2 = new NotaModel();
+    nota2.id = 1;
+    nota2.idAluno = 2;
+    nota2.semestre = '2º Semestre';
+    nota2.nota = 9.3;
+    nota2.aprovado = true;
+
+    let nota3 = new NotaModel();
+    nota3.id = 0;
+    nota3.idAluno = 0;
+    nota3.semestre = '1º Semestre';
+    nota3.nota = 7.7;
+    nota3.aprovado = true;
+
+    let nota4 = new NotaModel();
+    nota4.id = 2;
+    nota4.idAluno = 1;
+    nota4.semestre = '1º Semestre';
+    nota4.nota = 8.1;
+    nota4.aprovado = true;
+
+    alunoArrayNotas = [];
+
+    alunoArrayNotas.push(nota1, nota2, nota3, nota4);
+    localStorage.setItem('notasList', JSON.stringify(alunoArrayNotas));
+    listarNotas();
 };
 
 function listarAlunos() {
@@ -117,7 +142,7 @@ function criarElemento(modeloAluno) {
 
     cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoAluno('${alunoId}')`));
     cellEditar.style = 'text-align: center;';
-    cellNota.appendChild(criaButtonGeneric('Notas', 'btn_nota', `listarNotaAluno('${rowId}', '${alunoId}')`));
+    cellNota.appendChild(criaButtonGeneric('Notas', 'btn_nota', `listarNotaAluno('${alunoId}')`));
     cellNota.style = 'text-align: center;';
     cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarAluno('${rowId}')`));
     cellDeletar.style = 'text-align: center;';
@@ -239,31 +264,25 @@ function cadastrarAluno() {
 function cadastraAluno(objeto) {
     let nomeExiste = false;
     let raExiste = false;
-    let rmailExiste = false;
+    let emailExiste = false;
 
-    for (var i = 0; i < alunoArrayLista.length; i++) {
-        if (alunoArrayLista[i].nome.trim() == objeto.nome.trim()) {
-            nomeExiste = true;
-            break;
-        }
+    let alunoExiste = alunoArrayLista.find(o => o.nome === objeto.nome);
+
+    if (alunoExiste != null) {
+        nomeExiste = true;
+    } else if (alunoExiste == null) {
+        alunoExiste = alunoArrayLista.find(o => o.ra === objeto.ra);
+        raExiste = true;
+    } else if (alunoExiste == null) {
+        alunoExiste = alunoArrayLista.find(o => o.email === objeto.email);
+        emailExiste = true;
     }
-    for (var i = 0; i < alunoArrayLista.length; i++) {
-        if (alunoArrayLista[i].ra.trim() == objeto.ra.trim()) {
-            raExiste = true;
-            break;
-        }
-    }
-    for (var i = 0; i < alunoArrayLista.length; i++) {
-        if (alunoArrayLista[i].email.trim() == objeto.email.trim()) {
-            rmailExiste = true;
-            break;
-        }
-    }
+
     if (nomeExiste) {
         swal('Alert!', 'Ops, esse nome já foi cadastrado.', "info");
         return;
     }
-    if (rmailExiste) {
+    if (emailExiste) {
         swal('Alert!', 'Ops, esse e-mail já foi cadastrado.', "info");
         return;
     }
@@ -302,10 +321,9 @@ function cancelaAlteracao() {
 
 function modalEdicaoAluno(alunoId) {
     const taskSelected = document.getElementById(alunoId).innerHTML;
-    console.log(`Seleção - ${taskSelected}`);
-    let aluno = new AlunoModel();
     for (var i = 0; i < alunoArrayLista.length; i++) {
         if (alunoArrayLista[i].ra.trim() == taskSelected) {
+            let aluno = new AlunoModel();
             aluno.ra = alunoArrayLista[i].ra;
             aluno.nome = alunoArrayLista[i].nome;
             aluno.email = alunoArrayLista[i].email;
@@ -313,7 +331,6 @@ function modalEdicaoAluno(alunoId) {
 
             const inputId = document.getElementById('input_id');
             inputId.value = alunoId;
-
             const inputRa = document.getElementById('input_ra');
             inputRa.value = aluno.ra;
             const inputNome = document.getElementById('input_nome');
@@ -332,11 +349,9 @@ function modalEdicaoAluno(alunoId) {
 }
 
 function update() {
-
     const inputId = document.getElementById('input_id');
     if (inputId.value != undefined && inputId.value != null && inputId.value != '') {
         let indexItem = inputId.value.replace('aluno_id_', '');
-        //let indexItem = alunoId.replace('aluno_id_', '');
 
         const inputRa = document.getElementById('input_ra').value;
         const inputNome = document.getElementById('input_nome').value;
@@ -355,19 +370,6 @@ function update() {
         mostrarOcultarBotaoCancelar(false) // Oculta o botão que cancela a alteração
     }
 }
-
-function listarNotaAluno(rowId, idAluno) {
-    var row = document.getElementById(rowId);
-    const id = rowId.replace("row_id_", '');
-    var rowDescri = document.getElementById(idAluno).innerHTML;
-    swal({
-        title: "Notas do aluno",
-        text: `Notas semestrais do aluno(a): ${rowDescri}`,
-        icon: "info",
-        button: "Ok",
-    });
-}
-
 
 function deletarAluno(rowId) {
     var row = document.getElementById(rowId);
