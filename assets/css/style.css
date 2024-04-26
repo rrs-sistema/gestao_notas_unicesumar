@@ -50,7 +50,7 @@ header{
 
 .childBody {
   color: white;
-  background-color: #3b4b95;
+  background-color: #343a59;
   position: absolute;
   top: 350px;
   left: 50%;
@@ -247,7 +247,7 @@ div {
 }
 
 .alert.info {
-  background-color: #2196F3;
+  background-color: #343a59;
 }
 
 .alert.warning {
