@@ -1,5 +1,5 @@
 .body {
-  background-image: url(/assets/img/unicesumar.jpg);
+  background-image: url(./../img/unicesumar.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   justify-content: center;
