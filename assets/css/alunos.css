@@ -27,7 +27,6 @@
 
 .menu {
     float: right;
-    margin-top: 30px;
 }
 
 .menu ul {
@@ -45,4 +44,5 @@
     text-decoration: none;
     color: #333;
     font-weight: bold;
+    text-align: center;
 }
