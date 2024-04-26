@@ -15,10 +15,28 @@
     <!-- FONTE: https://www.w3schools.com/css/tryit.asp?filename=trycss_forms 
         outro modelo: 
         https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_form_icon -->
+    
+
+        <header>
+            <div class="contem_logo">
+                <div class="logo" ><img src="assets/img/logo.png" alt="Instituição"></div>
+                <div class="texto">
+                    <h3>Gestão de Notas</h3></div>
+            </div>
+            
+            <div class="menu">
+                <ul>
+                    <li><a href="alunos.html"><strong>Alunos envolvidos</strong></a></li>
+                </ul>
+            </div>
+        </header>
+
     <body class="body">
+
         <h3 class="titulo">Gestão de Notas</h3>
         <div class="childBody" style="width: 55%; ">
             <input type="hidden" id="input_id" name="input_id">
+
             <label for="input_nome">Nome do aluno</label>
             <input class="input_text" type="text" id="input_nome"
                 autocomplete="off" required
