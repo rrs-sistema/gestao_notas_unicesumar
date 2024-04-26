@@ -21,7 +21,7 @@ Esta é uma aplicação simples de para gestão de Notas Acadêmica desenvolvida
 ```bash/cmd ```
 git clone https://github.com/rrs-sistema/gestao_notas_unicesumar.git
 
-Veja aqui o video explicativo do projeto no Youtube: https://youtu.be/FivhKLNYxhU
+Veja aqui a aplicação funcionando: https://rrs-sistema.github.io/gestao_notas_unicesumar/index.html
 
 
 Abra o arquivo index.html no seu navegador web.
