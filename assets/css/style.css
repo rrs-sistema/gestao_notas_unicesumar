@@ -50,7 +50,7 @@ header{
 
 .childBody {
   color: white;
-  background-color: #32626F;
+  background-color: #6681f8;
   position: absolute;
   top: 350px;
   left: 50%;
@@ -86,7 +86,7 @@ header{
 
 .btn_cadastrar {
   width: 49%;
-  background-color: #669297;
+  background-color: #011416;
   position: relative;
   height: 50px;
   border: none;
@@ -165,7 +165,7 @@ div {
 
 
 .btn_cadastrar:hover {
-  background: slategrey;
+  background: #01292e;
 }
 
 .btn_cancelar:hover {

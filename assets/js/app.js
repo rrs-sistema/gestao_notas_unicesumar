@@ -71,7 +71,7 @@ function criaCabecalhoTable() {
 
     var thRA = document.createElement("th");
     thRA.innerHTML = 'RA';
-    thRA.style = 'min-width: 90px; width: 110px; text-align: left;';
+    thRA.style = 'min-width: 90px; width: 110px; text-align: center;';
     row.append(thRA);
 
     var thTask = document.createElement("th");
@@ -87,7 +87,7 @@ function criaCabecalhoTable() {
     var thActions = document.createElement("th");
     thActions.innerHTML = 'Ações';
     thActions.colSpan = 3;
-    thActions.style = 'min-width: 200px; text-align: left;';
+    thActions.style = 'min-width: 200px; text-align: center;';
     row.append(thActions);
 
     const table = document.getElementById("table");
@@ -101,6 +101,7 @@ function criarElemento(modeloAluno) {
     var cellTextoRaAluno = document.createElement("td");
     cellTextoRaAluno.id = alunoId;
     cellTextoRaAluno.innerHTML = modeloAluno.ra;
+    cellTextoRaAluno.style = 'text-align: center;';
     // Create two new cells
     var cellTextoNomeAluno = document.createElement("td");
     cellTextoNomeAluno.id = alunoId;

@@ -172,8 +172,6 @@ function modalVerNotasAluno(alunoCodigo, semestre) {
         const btnCadastrarNota = document.getElementById('btn_cadastrar_modal_adiciona_nota');
         btnCadastrarNota.value = 'Alterar';
 
-        var modalNotaSemestre = document.getElementById('modalNotaSemestre');
-        modalNotaSemestre.close();
     }
 }
 
@@ -301,6 +299,13 @@ function cadastrarNotaAluno() {
 
     fechaModalAdicionaNota();
     limpaCamposNotas();
+
+    chamaModalNotaSemestre();
+}
+
+function chamaModalNotaSemestre() {
+    var modalNotaSemestre = document.getElementById('modalNotaSemestre');
+    modalNotaSemestre.close();
 }
 
 
@@ -317,8 +322,7 @@ function chamaModalAdicionaNota() {
         return;
     }
 
-    var modalNotaSemestre = document.getElementById('modalNotaSemestre');
-    modalNotaSemestre.close();
+    chamaModalNotaSemestre();
 
     var modal = document.getElementById('modalAdicionaNota');
     modal.showModal();
