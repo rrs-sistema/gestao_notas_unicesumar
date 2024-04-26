@@ -5,9 +5,12 @@ localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
 let alunoArrayNotas = localStorage.getItem('notasList') ? JSON.parse(localStorage.getItem('notasList')) : [];
 localStorage.setItem('notasList', JSON.stringify(alunoArrayNotas));
 
+let idAlunoCadastro = 0;
+
 class AlunoModel {
-    constructor(id, ra, nome, email, aprovado) {
+    constructor(id, idAluno, ra, nome, email, aprovado) {
         this.id = id;
+        this.idAluno = idAluno;
         this.ra = ra;
         this.nome = nome;
         this.email = email;
@@ -18,39 +21,8 @@ class AlunoModel {
 
 window.onload = function () {
     listarAlunos();
-    let nota1 = new NotaModel();
-    nota1.id = 0;
-    nota1.idAluno = 2;
-    nota1.semestre = '1º Semestre';
-    nota1.nota = 5.9;
-    nota1.aprovado = false;
-
-    let nota2 = new NotaModel();
-    nota2.id = 1;
-    nota2.idAluno = 2;
-    nota2.semestre = '2º Semestre';
-    nota2.nota = 9.3;
-    nota2.aprovado = true;
-
-    let nota3 = new NotaModel();
-    nota3.id = 0;
-    nota3.idAluno = 0;
-    nota3.semestre = '1º Semestre';
-    nota3.nota = 7.7;
-    nota3.aprovado = true;
-
-    let nota4 = new NotaModel();
-    nota4.id = 2;
-    nota4.idAluno = 1;
-    nota4.semestre = '1º Semestre';
-    nota4.nota = 8.1;
-    nota4.aprovado = true;
-
-    alunoArrayNotas = [];
-
-    alunoArrayNotas.push(nota1, nota2, nota3, nota4);
-    localStorage.setItem('notasList', JSON.stringify(alunoArrayNotas));
     listarNotas();
+    mostrarOcultarBotaoCancelar(false);
 };
 
 function listarAlunos() {
@@ -88,7 +60,9 @@ function listarAlunos() {
         }
     }
 
-    localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista))
+    localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
+
+
 }
 
 function criaCabecalhoTable() {
@@ -97,22 +71,23 @@ function criaCabecalhoTable() {
 
     var thRA = document.createElement("th");
     thRA.innerHTML = 'RA';
-    thRA.style = 'width: 120px; text-align: left;';
+    thRA.style = 'min-width: 90px; width: 110px; text-align: left;';
     row.append(thRA);
 
     var thTask = document.createElement("th");
     thTask.innerHTML = 'Nome';
-    thTask.style = 'width: 35%; text-align: left;';
+    thTask.style = 'width: 50%; text-align: left;';
     row.append(thTask);
 
     var thEmail = document.createElement("th");
     thEmail.innerHTML = 'E-mail';
-    thEmail.style = 'width: 35%; text-align: left;';
+    thEmail.style = 'width: 50%; text-align: left;';
     row.append(thEmail);
 
     var thActions = document.createElement("th");
     thActions.innerHTML = 'Ações';
     thActions.colSpan = 3;
+    thActions.style = 'min-width: 200px; text-align: left;';
     row.append(thActions);
 
     const table = document.getElementById("table");
@@ -140,9 +115,9 @@ function criarElemento(modeloAluno) {
     var cellDeletar = document.createElement("td");
     const rowId = `row_id_${modeloAluno.id}`;
 
-    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoAluno('${alunoId}')`));
+    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoAluno(${modeloAluno.idAluno})`));
     cellEditar.style = 'text-align: center;';
-    cellNota.appendChild(criaButtonGeneric('Notas', 'btn_nota', `listarNotaAluno('${alunoId}')`));
+    cellNota.appendChild(criaButtonGeneric('Notas', 'btn_nota', `listarNotaAluno(${modeloAluno.idAluno})`));
     cellNota.style = 'text-align: center;';
     cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarAluno('${rowId}')`));
     cellDeletar.style = 'text-align: center;';
@@ -157,7 +132,7 @@ function criarElemento(modeloAluno) {
     row.appendChild(cellDeletar);
     const table = document.getElementById("table");
     table.appendChild(row);// Adiciona a linha na tabela
-    limpaCampos();
+    limpaCamposAluno();
 
     mostrarOcultarBotaoCancelar(false) // Oculta o botão que cancela a alteração
 
@@ -173,9 +148,8 @@ function mostrarOcultarBotaoCancelar(mostrar) {
     btnCancelar.style = mostrar ? "display: null;" : "display: none;"
 }
 
-function limpaCampos() {
-    const inputId = document.getElementById('input_id');
-    inputId.value = ''; // Limpa o input de ID
+function limpaCamposAluno() {
+    idAlunoCadastro = 0; // Limpa o input de ID
 
     const inputNome = document.getElementById('input_nome');
     inputNome.value = ''; // Limpa o input de nome
@@ -200,64 +174,45 @@ function criaButtonGeneric(nome, className, funcao) {
     return button;
 }
 
-function cadastrarAluno() {
-
-    const inputId = document.getElementById('input_id');
+function adicionaDadosAluno() {
 
     const nomeAluno = document.getElementById('input_nome').value;
     const raAluno = document.getElementById('input_ra').value;
     const emailAluno = document.getElementById('input_email').value;
+
+    var modalAlerta = document.getElementById('modalAlerta');
+    var tituloAlerta = document.getElementById('tituloAlerta');
+    var mensagemAlerta = document.getElementById('mensagemAlerta');
+
+    tituloAlerta.innerHTML = 'Atenção!';
+
     if (nomeAluno == null || nomeAluno == '') {
-        swal('OPS!, Por favor informe o nome do aluno.', {
-            button: {
-                text: "OK",
-            },
-        });
+        mensagemAlerta.innerHTML = 'Por favor informe o nome do aluno.';
+        modalAlerta.showModal();
         return;
     }
     if (raAluno == null || raAluno == '') {
-        swal('OPS!, Por favor informe o RA (Registro Acadêmico) do aluno.', {
-            button: {
-                text: "OK",
-            },
-        });
+        mensagemAlerta.innerHTML = 'Por favor informe o RA (Registro Acadêmico) do aluno.';
+        modalAlerta.showModal();
         return;
     }
     if (emailAluno == null || emailAluno == '') {
-        swal('OPS!, Por favor informe o e-mail do aluno.', {
-            button: {
-                text: "OK",
-            },
-        });
+        mensagemAlerta.innerHTML = 'Por favor informe o e-mail do aluno.';
         return;
     }
     const table = document.getElementById("table");
     let quantidade = table.children.length;
     let alunoModel = new AlunoModel();
     alunoModel.id = quantidade;
+    alunoModel.idAluno = quantidade;
     alunoModel.nome = nomeAluno;
     alunoModel.ra = raAluno;
     alunoModel.email = emailAluno;
     alunoModel.aprovado = false;
-    if (inputId.value == undefined || inputId.value == null || inputId.value == '') {
+    if (idAlunoCadastro < 1) {
         cadastraAluno(alunoModel, true);
     } else {
-        //swal('Pergunta!', 'Deseja alterar os dados do aluno?', "info");
-        swal({
-            title: `Você deseja alterar os dados do(a) aluno(a): "${nomeAluno}"?`,
-            icon: "warning",
-            buttons: ["Não", "Sim"],
-            buttons: true,
-            dangerMode: true,
-
-        }).then((acao) => {
-            if (acao) {
-                console.log(`Alterado os dados do(a) aluno(a): ${nomeAluno}`);
-                update();
-            } else {
-                console.log(`Não foi alterado os dados do(a) aluno(a): ${nomeAluno}`);
-            }
-        });
+        update();
     }
 };
 
@@ -268,31 +223,48 @@ function cadastraAluno(objeto) {
 
     let alunoExiste = alunoArrayLista.find(o => o.nome === objeto.nome);
 
-    if (alunoExiste != null) {
+    if (alunoExiste != null && alunoExiste != undefined) {
         nomeExiste = true;
-    } else if (alunoExiste == null) {
+    }
+    if (!nomeExiste) {
         alunoExiste = alunoArrayLista.find(o => o.ra === objeto.ra);
-        raExiste = true;
-    } else if (alunoExiste == null) {
+        if (alunoExiste != null && alunoExiste != undefined) {
+            raExiste = true;
+        }
+    }
+    if (!nomeExiste && !raExiste) {
         alunoExiste = alunoArrayLista.find(o => o.email === objeto.email);
-        emailExiste = true;
+        if (alunoExiste != null && alunoExiste != undefined) {
+            emailExiste = true;
+        }
     }
 
-    if (nomeExiste) {
-        swal('Alert!', 'Ops, esse nome já foi cadastrado.', "info");
+    var modalPergunta = document.getElementById('modalAlerta');
+    var tituloAlerta = document.getElementById('tituloAlerta');
+    var mensagemAlerta = document.getElementById('mensagemAlerta');
+
+    tituloAlerta.innerHTML = 'Atenção!';
+    if (nomeExiste && idAlunoCadastro < 1) {
+        mensagemAlerta.innerHTML = 'Esse nome já foi cadastrado.';
+        modalPergunta.showModal();
         return;
     }
-    if (emailExiste) {
-        swal('Alert!', 'Ops, esse e-mail já foi cadastrado.', "info");
+    if (emailExiste && idAlunoCadastro < 1) {
+        mensagemAlerta.innerHTML = 'Esse e-mail já foi cadastrado';
+        modalPergunta.showModal();
         return;
     }
-    if (raExiste) {
-        swal('Alert!', 'Ops, esse RA (Registro Acadêmico) já foi cadastrado.', "info");
+    if (raExiste && idAlunoCadastro < 1) {
+        mensagemAlerta.innerHTML = 'Ops, Esse RA (Registro Acadêmico) já foi cadastrado.';
+        modalPergunta.showModal();
         return;
     }
+
+    const ultimoAluno = alunoArrayLista[alunoArrayLista.length - 1];
 
     let modeloAluno = new AlunoModel();
-    modeloAluno.id = objeto.id - 1;
+    modeloAluno.id = (ultimoAluno == null || ultimoAluno == undefined) ? 0 : objeto.id - 1;
+    modeloAluno.idAluno = (ultimoAluno == null || ultimoAluno == undefined) ? 1 : ultimoAluno.idAluno + 1;
     modeloAluno.nome = objeto.nome;
     modeloAluno.ra = objeto.ra;
     modeloAluno.email = objeto.email;
@@ -311,86 +283,108 @@ function cadastraAluno(objeto) {
         }
     }
 
-    localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista))
+    localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
+    limpaCamposAluno();
 }
 
 function cancelaAlteracao() {
     mostrarOcultarBotaoCancelar(false);
-    limpaCampos();
+    limpaCamposAluno();
 }
 
 function modalEdicaoAluno(alunoId) {
-    const taskSelected = document.getElementById(alunoId).innerHTML;
-    for (var i = 0; i < alunoArrayLista.length; i++) {
-        if (alunoArrayLista[i].ra.trim() == taskSelected) {
-            let aluno = new AlunoModel();
-            aluno.ra = alunoArrayLista[i].ra;
-            aluno.nome = alunoArrayLista[i].nome;
-            aluno.email = alunoArrayLista[i].email;
-            aluno.aprovado = alunoArrayLista[i].aprovado;
+    let alunoExiste = alunoArrayLista.find(o => o.idAluno === alunoId);
+    idAlunoCadastro = alunoId;
 
-            const inputId = document.getElementById('input_id');
-            inputId.value = alunoId;
-            const inputRa = document.getElementById('input_ra');
-            inputRa.value = aluno.ra;
-            const inputNome = document.getElementById('input_nome');
-            inputNome.value = aluno.nome;
-            const inputEmail = document.getElementById('input_email');
-            inputEmail.value = aluno.email;
+    if (alunoExiste != null && alunoExiste != undefined) {
+        let aluno = new AlunoModel();
+        aluno.idAluno = alunoExiste.idAluno;
+        aluno.ra = alunoExiste.ra;
+        aluno.nome = alunoExiste.nome;
+        aluno.email = alunoExiste.email;
+        aluno.aprovado = alunoExiste.aprovado;
 
-            const btnCadastrar = document.getElementById('btn_cadastrar');
-            btnCadastrar.value = 'Alterar';
+        const inputRa = document.getElementById('input_ra');
+        inputRa.value = aluno.ra;
+        const inputNome = document.getElementById('input_nome');
+        inputNome.value = aluno.nome;
+        const inputEmail = document.getElementById('input_email');
+        inputEmail.value = aluno.email;
 
-            mostrarOcultarBotaoCancelar(true); // Mostra o botão que cancela a alteração
+        const btnCadastrar = document.getElementById('btn_cadastrar');
+        btnCadastrar.value = 'Alterar';
 
-            break;
-        }
+        mostrarOcultarBotaoCancelar(true); // Mostra o botão que cancela a alteração
     }
 }
 
 function update() {
-    const inputId = document.getElementById('input_id');
-    if (inputId.value != undefined && inputId.value != null && inputId.value != '') {
-        let indexItem = inputId.value.replace('aluno_id_', '');
+    if (idAlunoCadastro > 0) {
+        //let indexItem = inputId.value.replace('aluno_id_', '');
+
+        let alunoUpdate = alunoArrayLista.find(o => o.idAluno === idAlunoCadastro);
 
         const inputRa = document.getElementById('input_ra').value;
         const inputNome = document.getElementById('input_nome').value;
         const inputEmail = document.getElementById('input_email').value;
 
         let alunoModel = new AlunoModel();
-        alunoModel.id = indexItem;
+        alunoModel.id = alunoUpdate.id;
+        alunoModel.idAluno = idAlunoCadastro;
         alunoModel.ra = inputRa;
         alunoModel.nome = inputNome;
         alunoModel.email = inputEmail;
-        alunoArrayLista.splice(indexItem, 1);
+        alunoArrayLista.splice(alunoUpdate.id, 1);
         alunoArrayLista.push(alunoModel);
         localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
-        limpaCampos();
+        limpaCamposAluno();
         listarAlunos();
         mostrarOcultarBotaoCancelar(false) // Oculta o botão que cancela a alteração
     }
 }
 
 function deletarAluno(rowId) {
-    var row = document.getElementById(rowId);
     const id = rowId.replace("row_id_", '');
     let objAluno = alunoArrayLista.find(o => o.id === parseInt(id));
-    swal({
-        title: `Deseja excluir o aluno: "${objAluno.nome}"?`,
-        icon: "info",
-        buttons: ["Cancelar", "Excluir"],
-        dangerMode: true,
+    var modalPergunta = document.getElementById('modalPergunta');
+    var tituloAlerta = document.getElementById('tituloModalPergunta');
+    var mensagemAlerta = document.getElementById('mensagemModalPergunta');
 
-    }).then((willDelete) => {
-        if (willDelete) {
-            row.parentNode.removeChild(row);
-            alunoArrayLista.splice(id, 1);
-            localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
-            listarTarefa();
-            swal("Aluno excluir com sucesso!", {
-                icon: "warning",
-                timer: 2000,
-            });
+    tituloAlerta.innerHTML = 'Pergunta!';
+
+    mensagemAlerta.innerHTML = `Deseja excluir o aluno(a): "${objAluno.nome}"?`;
+    var buttonSimModalPergunta = document.getElementById('simModalPergunta');
+    buttonSimModalPergunta.setAttribute('onclick', `efetuaExclusaoAluno('${rowId}', ${objAluno.idAluno})`);
+
+    modalPergunta.showModal();
+}
+
+
+function efetuaExclusaoAluno(rowId, idAluno) {
+    var row = document.getElementById(rowId);
+    const id = rowId.replace("row_id_", '');
+    row.parentNode.removeChild(row);
+    alunoArrayLista.splice(id, 1);
+    localStorage.setItem('alunosList', JSON.stringify(alunoArrayLista));
+
+    let removeValFromIndex = [];
+
+    for (var i = 0; i < alunoArrayNotas.length; i++) {
+        if (alunoArrayNotas[i].idAluno == idAluno) {
+            console.log(`EXCLUINDO ID:::: ${i} - NOTA:::: ${alunoArrayNotas[i].notaProva} - DO ALUNO: ${idAluno}`);
+            removeValFromIndex.push(i);
         }
-    });
+    }
+
+    for (var i = removeValFromIndex.length - 1; i >= 0; i--)
+        alunoArrayNotas.splice(removeValFromIndex[i], 1);
+
+    localStorage.setItem('notasList', JSON.stringify(alunoArrayNotas));
+
+
+    var modal = document.getElementById('modalPergunta');
+    modal.close();
+
+    listarAlunos();
+    listarNotas();
 }
