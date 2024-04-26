@@ -15,7 +15,6 @@ class AlunoModel {
         this.nome = nome;
         this.email = email;
         this.aprovado = aprovado;
-        this.notas = [];
     }
 }
 
