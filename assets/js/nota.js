@@ -179,11 +179,11 @@ function limpaCamposNotas() {
     const bimestreSelecionado = document.getElementById('bimestreSelecionado');
     bimestreSelecionado.value = '';
     const inputNotaProva = document.getElementById('input_nota_prova');
-    inputNotaProva.value = '0';
+    inputNotaProva.value = null;
     const inputNotaAEP = document.getElementById('input_nota_aep');
-    inputNotaAEP.value = '0';
+    inputNotaAEP.value = null;
     const inputNotaProvaIntegrada = document.getElementById('input_nota_prova_integrada');
-    inputNotaProvaIntegrada.value = '0';
+    inputNotaProvaIntegrada.value = null;
 
     const btnCadastrarNota = document.getElementById('btn_cadastrar_modal_adiciona_nota');
     btnCadastrarNota.value = 'Cadastrar';
@@ -331,6 +331,7 @@ function chamaModalAdicionaNota() {
 function fechaModalAdicionaNota() {
     var modal = document.getElementById('modalAdicionaNota');
     modal.close();
+    limpaCamposNotas();
 }
 
 
