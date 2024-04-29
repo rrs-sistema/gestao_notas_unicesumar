@@ -248,7 +248,6 @@ function cadastrarNotaAluno() {
 
     // Verifica se o bismestre já foi lançado
     let bimestreJaLancado = alunoArrayNotas.find(o => o.idAluno === idAlunoNota && o.semestre === bimestreSelecionado);
-    console.log('Verifica se o bismestre já foi lançado...');
     if (bimestreJaLancado != null && bimestreJaLancado != undefined && idNota < 0) {
         mensagemAlerta.innerHTML = 'Já foram lançado as notas nesse bimestre, Por favor altere o bimestre.';
         modalAlerta.showModal();
