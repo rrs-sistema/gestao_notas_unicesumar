@@ -246,6 +246,15 @@ function cadastrarNotaAluno() {
         return;
     }
 
+    // Verifica se o bismestre já foi lançado
+    let bimestreJaLancado = alunoArrayNotas.find(o => o.idAluno === idAlunoNota && o.semestre === bimestreSelecionado);
+    console.log('Verifica se o bismestre já foi lançado...');
+    if (bimestreJaLancado != null && bimestreJaLancado != undefined && idNota < 0) {
+        mensagemAlerta.innerHTML = 'Já foram lançado as notas nesse bimestre, Por favor altere o bimestre.';
+        modalAlerta.showModal();
+        return;
+    }
+
     if (inputNotaProva == null || inputNotaProva == '') {
         mensagemAlerta.innerHTML = 'Por favor a nota da prova.';
         modalAlerta.showModal();
