@@ -198,8 +198,33 @@ function adicionaDadosAluno() {
     }
     if (emailAluno == null || emailAluno == '') {
         mensagemAlerta.innerHTML = 'Por favor informe o e-mail do aluno.';
+        modalAlerta.showModal();
         return;
     }
+
+    const emailUser = emailAluno.substring(0, emailAluno.indexOf("@"));
+    const dominio = emailAluno.substring(emailAluno.indexOf("@") + 1, emailAluno.length);
+    let emailValido = false;
+
+    if ((emailUser.length >= 1) &&
+        (dominio.length >= 3) &&
+        (emailUser.search("@") == -1) &&
+        (dominio.search("@") == -1) &&
+        (emailUser.search(" ") == -1) &&
+        (dominio.search(" ") == -1) &&
+        (dominio.search(".") != -1) &&
+        (dominio.indexOf(".") >= 1) &&
+        (dominio.lastIndexOf(".") < dominio.length - 1)) {
+        emailValido = true;
+    }
+
+    if (emailValido === false) {
+        emailValido = true;
+        mensagemAlerta.innerHTML = 'Por favor informe o e-mail válido.';
+        modalAlerta.showModal();
+        return;
+    }
+
     const table = document.getElementById("table");
     let quantidade = table.children.length;
     let alunoModel = new AlunoModel();
@@ -264,7 +289,7 @@ function cadastraAluno(objeto) {
 
     let modeloAluno = new AlunoModel();
     modeloAluno.id = (ultimoAluno == null || ultimoAluno == undefined) ? 0 : objeto.id - 1;
-    modeloAluno.idAluno = (ultimoAluno == null || ultimoAluno == undefined) ? 1 : ultimoAluno.idAluno + 1;
+    modeloAluno.idAluno = (ultimoAluno == null || ultimoAluno == undefined) ? 1 : ultimoAluno.id + 1;
     modeloAluno.nome = objeto.nome;
     modeloAluno.ra = objeto.ra;
     modeloAluno.email = objeto.email;
