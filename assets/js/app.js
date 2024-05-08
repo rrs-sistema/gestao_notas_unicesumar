@@ -167,6 +167,7 @@ function limpaCamposAluno() {
 function criaButtonGeneric(nome, className, funcao) {
     var button = document.createElement('input');
     button.id = `button${nome}`;//"buttonEditar";
+    button.name = `button${nome}`;//"buttonEditar";
     button.type = "button";
     button.value = nome;
     button.className = `btn_generic ${className}`;
@@ -187,23 +188,70 @@ function adicionaDadosAluno() {
     tituloAlerta.innerHTML = 'Atenção!';
 
     if (nomeAluno == null || nomeAluno == '') {
+        document.getElementById("input_nome").focus();
         mensagemAlerta.innerHTML = 'Por favor informe o nome do aluno.';
         modalAlerta.showModal();
         return;
     }
-    if (raAluno == null || raAluno == '') {
-        mensagemAlerta.innerHTML = 'Por favor informe o RA (Registro Acadêmico) do aluno.';
-        modalAlerta.showModal();
-        return;
-    }
-    if (emailAluno == null || emailAluno == '') {
-        mensagemAlerta.innerHTML = 'Por favor informe o e-mail do aluno.';
+    if (nomeAluno.length < 4) {
+        document.getElementById("input_nome").focus();
+        mensagemAlerta.innerHTML = 'Ops! O nome do aluno está muito curto.';
         modalAlerta.showModal();
         return;
     }
 
-    const emailUser = emailAluno.substring(0, emailAluno.indexOf("@"));
-    const dominio = emailAluno.substring(emailAluno.indexOf("@") + 1, emailAluno.length);
+    if (emailAluno == null || emailAluno == '') {
+        document.getElementById("input_email").focus();
+        mensagemAlerta.innerHTML = 'Por favor informe o e-mail do aluno.';
+        modalAlerta.showModal();
+        return;
+    }
+    if (!validaEmail(emailAluno)) {
+        document.getElementById("input_email").focus();
+        emailValido = true;
+        mensagemAlerta.innerHTML = 'Por favor informe o e-mail válido.';
+        modalAlerta.showModal();
+        return;
+    }
+
+    if (raAluno == null || raAluno == '') {
+        document.getElementById("input_ra").focus();
+        mensagemAlerta.innerHTML = 'Por favor informe o RA (Registro Acadêmico) do aluno.';
+        modalAlerta.showModal();
+        return;
+    }
+    if (raAluno.length < 10 || raAluno.length > 10) {
+        document.getElementById("input_ra").focus();
+        mensagemAlerta.innerHTML = 'Ops! O RA (Registro Acadêmico) deve conter 10 caracteres. Ex: (11223344-9)';
+        modalAlerta.showModal();
+        return;
+    }
+
+    let alunoModel = new AlunoModel();
+    let ultimoIdAluno = 1;
+    let id = 0;
+
+    alunoArrayLista.forEach(aluno => {
+        ultimoIdAluno = aluno.idAluno + 1;
+        id = aluno.id + 1;
+    });
+
+    alunoModel.id = id;
+    alunoModel.idAluno = ultimoIdAluno;
+    alunoModel.nome = nomeAluno;
+    alunoModel.ra = raAluno;
+    alunoModel.email = emailAluno;
+    alunoModel.aprovado = false;
+    if (idAlunoCadastro < 1) {
+        cadastraAluno(alunoModel, true);
+    } else {
+        update();
+    }
+};
+
+function validaEmail(email) {
+    const emailUser = email.substring(0, email.indexOf("@"));
+    const dominio = email.substring(email.indexOf("@") + 1, email.length);
     let emailValido = false;
 
     if ((emailUser.length >= 1) &&
@@ -217,79 +265,47 @@ function adicionaDadosAluno() {
         (dominio.lastIndexOf(".") < dominio.length - 1)) {
         emailValido = true;
     }
-
-    if (emailValido === false) {
-        emailValido = true;
-        mensagemAlerta.innerHTML = 'Por favor informe o e-mail válido.';
-        modalAlerta.showModal();
-        return;
-    }
-
-    const table = document.getElementById("table");
-    let quantidade = table.children.length;
-    let alunoModel = new AlunoModel();
-    alunoModel.id = quantidade;
-    alunoModel.idAluno = quantidade;
-    alunoModel.nome = nomeAluno;
-    alunoModel.ra = raAluno;
-    alunoModel.email = emailAluno;
-    alunoModel.aprovado = false;
-    if (idAlunoCadastro < 1) {
-        cadastraAluno(alunoModel, true);
-    } else {
-        update();
-    }
-};
+    return emailValido;
+}
 
 function cadastraAluno(objeto) {
-    let nomeExiste = false;
     let raExiste = false;
     let emailExiste = false;
 
-    let alunoExiste = alunoArrayLista.find(o => o.nome === objeto.nome);
-
+    let alunoExiste = alunoArrayLista.find(o => o.email.trim() === objeto.email.trim());
     if (alunoExiste != null && alunoExiste != undefined) {
-        nomeExiste = true;
+        emailExiste = true;
     }
-    if (!nomeExiste) {
-        alunoExiste = alunoArrayLista.find(o => o.ra === objeto.ra);
+
+    if (!emailExiste) {
+        alunoExiste = alunoArrayLista.find(o => o.ra.trim() === o.ra.trim());
         if (alunoExiste != null && alunoExiste != undefined) {
             raExiste = true;
         }
     }
-    if (!nomeExiste && !raExiste) {
-        alunoExiste = alunoArrayLista.find(o => o.email === objeto.email);
-        if (alunoExiste != null && alunoExiste != undefined) {
-            emailExiste = true;
-        }
-    }
 
-    var modalPergunta = document.getElementById('modalAlerta');
-    var tituloAlerta = document.getElementById('tituloAlerta');
-    var mensagemAlerta = document.getElementById('mensagemAlerta');
-
-    tituloAlerta.innerHTML = 'Atenção!';
-    if (nomeExiste && idAlunoCadastro < 1) {
-        mensagemAlerta.innerHTML = 'Esse nome já foi cadastrado.';
-        modalPergunta.showModal();
-        return;
-    }
     if (emailExiste && idAlunoCadastro < 1) {
-        mensagemAlerta.innerHTML = 'Esse e-mail já foi cadastrado';
-        modalPergunta.showModal();
+        document.getElementById("input_email").focus();
+        showModal('Atenção!', 'Esse e-mail já foi cadastrado');
         return;
     }
     if (raExiste && idAlunoCadastro < 1) {
-        mensagemAlerta.innerHTML = 'Ops, Esse RA (Registro Acadêmico) já foi cadastrado.';
-        modalPergunta.showModal();
+        document.getElementById("input_ra").focus();
+        showModal('Atenção!', 'Ops, Esse RA (Registro Acadêmico) já foi cadastrado.');
         return;
     }
 
-    const ultimoAluno = alunoArrayLista[alunoArrayLista.length - 1];
+    let ultimoIdAluno = 1;
+    let id = 0;
+
+    alunoArrayLista.forEach(aluno => {
+        ultimoIdAluno = aluno.idAluno + 1;
+        id = aluno.id + 1;
+    });
 
     let modeloAluno = new AlunoModel();
-    modeloAluno.id = (ultimoAluno == null || ultimoAluno == undefined) ? 0 : objeto.id - 1;
-    modeloAluno.idAluno = (ultimoAluno == null || ultimoAluno == undefined) ? 1 : ultimoAluno.id + 1;
+    modeloAluno.id = id;
+    modeloAluno.idAluno = ultimoIdAluno;
     modeloAluno.nome = objeto.nome;
     modeloAluno.ra = objeto.ra;
     modeloAluno.email = objeto.email;
@@ -312,9 +328,19 @@ function cadastraAluno(objeto) {
     limpaCamposAluno();
 }
 
+function showModal(titulo, mensagem) {
+    var modalPergunta = document.getElementById('modalAlerta');
+    var tituloAlerta = document.getElementById('tituloAlerta');
+    var mensagemAlerta = document.getElementById('mensagemAlerta');
+    tituloAlerta.innerHTML = titulo;
+    mensagemAlerta.innerHTML = mensagem;
+    modalPergunta.showModal();
+}
+
 function cancelaAlteracao() {
     mostrarOcultarBotaoCancelar(false);
     limpaCamposAluno();
+    disabledAnableButtonTable(false);
 }
 
 function modalEdicaoAluno(alunoId) {
@@ -340,18 +366,58 @@ function modalEdicaoAluno(alunoId) {
         btnCadastrar.value = 'Alterar';
 
         mostrarOcultarBotaoCancelar(true); // Mostra o botão que cancela a alteração
+
+        disabledAnableButtonTable(true);
+    }
+}
+
+function disabledAnableButtonTable(flag) {
+    var listaButtonEditar = document.getElementsByName('buttonEditar');
+    for (var i = 0; i < listaButtonEditar.length; i++) {
+        listaButtonEditar[i].disabled = flag;
+    }
+    var listaButtonNotas = document.getElementsByName('buttonNotas');
+    for (var i = 0; i < listaButtonNotas.length; i++) {
+        listaButtonNotas[i].disabled = flag;
+    }
+    var listaButtonDeletar = document.getElementsByName('buttonDeletar');
+    for (var i = 0; i < listaButtonDeletar.length; i++) {
+        listaButtonDeletar[i].disabled = flag;
     }
 }
 
 function update() {
     if (idAlunoCadastro > 0) {
-        //let indexItem = inputId.value.replace('aluno_id_', '');
-
         let alunoUpdate = alunoArrayLista.find(o => o.idAluno === idAlunoCadastro);
 
         const inputRa = document.getElementById('input_ra').value;
         const inputNome = document.getElementById('input_nome').value;
         const inputEmail = document.getElementById('input_email').value;
+
+        let raExiste = false;
+        let emailExiste = false;
+
+        let alunoExiste = alunoArrayLista.find(o => o.ra.trim() === inputRa.trim() && o.idAluno !== idAlunoCadastro);
+        if (alunoExiste != null && alunoExiste != undefined) {
+            raExiste = true;
+        }
+        if (!raExiste) {
+            alunoExiste = alunoArrayLista.find(o => o.email.trim() === inputEmail && o.idAluno !== idAlunoCadastro);
+            if (alunoExiste != null && alunoExiste != undefined) {
+                emailExiste = true;
+            }
+        }
+
+        if (emailExiste) {
+            document.getElementById("input_email").focus();
+            showModal('Atenção!', 'Esse e-mail já foi cadastrado');
+            return;
+        }
+        if (raExiste) {
+            document.getElementById("input_ra").focus();
+            showModal('Atenção!', 'Ops, Esse RA (Registro Acadêmico) já foi cadastrado.');
+            return;
+        }
 
         let alunoModel = new AlunoModel();
         alunoModel.id = alunoUpdate.id;

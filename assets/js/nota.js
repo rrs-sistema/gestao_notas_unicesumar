@@ -66,7 +66,7 @@ function criaTableNota() {
     });
 }
 
-function buscaNotas(idAluno) {
+function buscaNotas() {
 
     const dadosLocalStorage = JSON.parse(localStorage.getItem('notasList'));
     alunoArrayNotas = [];
@@ -91,9 +91,14 @@ function buscaNotas(idAluno) {
     });
 
     if (mediaBimestre != 0) {
-        const valorMedia = (mediaBimestre / 2);
-        const resultadoL = valorMedia > 6 ? 'Aprovado' : (valorMedia >= 3 && valorMedia < 6) ? 'Recuperação' : 'Reprovado';
-        labelMediaSemestral.innerHTML = `${resultadoL} com a média: ${valorMedia.toFixed(1)}`;
+        let notasAluno = alunoArrayNotas.filter(o => o.idAluno === idAlunoNota);
+        let dividiPor = 1;
+        if (notasAluno != null && notasAluno != undefined && notasAluno.length > 1) {
+            dividiPor = notasAluno.length;
+        }
+        const valorMedia = (mediaBimestre / dividiPor);
+        const resulFinal = valorMedia > 6 ? 'Aprovado' : (valorMedia >= 3 && valorMedia < 6) ? 'Recuperação' : 'Reprovado';
+        labelMediaSemestral.innerHTML = `${resulFinal} com a média: ${valorMedia.toFixed(1)}`;
     }
 
     var linhasTabela = document.getElementsByTagName("tr");
@@ -106,7 +111,6 @@ function buscaNotas(idAluno) {
             linhasTabela[i].className = "styleTwo";
         }
     }
-    //localStorage.setItem('notasList', JSON.stringify(alunoArrayNotas))
 }
 
 function criarElementoNota(modeloNota) {
@@ -214,7 +218,7 @@ function listarNotaAluno(alunoID) {
         tableNotaSemestre.removeChild(fc.nextSibling);
     }
 
-    buscaNotas(alunoID);
+    buscaNotas();
     let objAluno = alunoArrayLista.find(o => o.idAluno === idAlunoNota);
     const table = document.getElementById("tableNotaSemestre");
     table.style = 'width: 100%; text-align: center; color: #FFFFFF;';
